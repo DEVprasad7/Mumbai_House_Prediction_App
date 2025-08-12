@@ -56,7 +56,7 @@ with col2:
     # Get unique locations from LOCATION_COLUMNS (skip bhk and total_sqft)
     locations = sorted([loc for loc in LOCATION_COLUMNS[2:]])
     Location = st.selectbox('Select Location', locations)
-    Total_area = st.number_input("📐 Area of Apartment (sq ft)", min_value=100, value=100, max_value=4000)
+    Total_area = st.number_input("📐 Area of Apartment (sq ft)", min_value=100, value=500, max_value=4000)
 
 
 # --- Format Function ---

@@ -1,11 +1,9 @@
 import streamlit as st
-import joblib
 import numpy as np
+import joblib
 
-# Load the model
 model = joblib.load("model.pkl")
 
-# --- Custom CSS Styling ---
 st.markdown("""
     <style>
         .title {
@@ -37,42 +35,61 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- App Title ---
 st.markdown('<h1 class="title">🏠 Mumbai House Price Prediction 💵</h1>', unsafe_allow_html=True)
 st.write("Estimate the price of a house in Mumbai based on its Type, Location, and Total Square Feet.")
 
 st.markdown("---")
 
-# --- Input Layout ---
 col1, col2 = st.columns(2)
 
 with col1:
     type_o = st.selectbox(
-        "🏢 House / Apartment Type",
-        ("BHK", "RK", "RK Studio"),
+        "🏢 House Type",
+        ("BHK"),
         index=None,
         placeholder="Select",
     )
     type = st.number_input(f"Number Of {type_o if type_o else 'Units'}", min_value=1, value=1)
 
 with col2:
-    Location = st.text_input("📍 Enter the location").strip().capitalize()
-    Total_area = st.number_input("📐 Area of Apartment (sq ft)", min_value=0, value=100)
+    Location_list = [
+                        'Agripada','Airoli','Ambernath','Andheri',
+                        'Anjurdive','Badlapur','Bandra','Bandra Kurla Complex',
+                        'Bhandup','Bhayandar','Bhiwandi','Boisar',
+                        'Borivali','Byculla','Chembur','Cuffe Parade',
+                        'Dadar','Dahisar','Deonar','Diva',
+                        'Dombivali','Dronagiri','Dundare','Fort',
+                        'Ghansoli','Ghatkopar','Girgaon','Goregaon',
+                        'Jogeshwari','Juhu','Kalamboli','Kalwa',
+                        'Kalyan','Kamathipura','Kamothe','Kandivali',
+                        'Kanjurmarg','Karanjade','Karjat','Kasheli','Khar',
+                        'Kharghar','Khopoli','Koper Khairane','Koproli',
+                        'Kurla','Lbs Marg','Lower Parel','Madanpura',
+                        'Mahim','Malad','Matunga','Mazagaon',
+                        'Mazgaon','Mira Road','Mulund','Nahur','Naigaon',
+                        'Nala Sopara','Nalasopara','Napeansea Road''Navade',
+                        'Neral','Nerul','Nilje Gaon','Palava','Palghar','Panvel',
+                        'Peddar Road','Powai','Prabhadevi','Rabale',
+                        'Rasayani','Sanpada','Santacruz','Saphale',
+                        'Seawoods','Sector-20 Koparkhairane','Sewri','Shahapur',
+                        'Shil Phata','Sion','Taloja','Thane','Titwala',
+                        'Ulhasnagar','Ulwe','Umroli','Usarghar Gaon',
+                        'Vangani','Vasai','Vasind','Vichumbe','Vikhroli',
+                        'Vikroli','Ville Parle','Virar','Wada','Wadala','Worli'
+                    ]
+    Location = st.selectbox("📍 Enter the location", options=Location_list).strip().capitalize()
+    Total_area = st.number_input("📐 Area of Apartment (sq ft)", min_value=100, value=100, max_value=4000)
 
-# Convert location & city to numeric
-Location_ascii = sum(ord(ch) for ch in str(Location))
-City_ascii = sum(ord(ch) for ch in str("Mumbai"))
 
-X = [[type, Location_ascii, City_ascii, Total_area]]
+
+X = [[type, Total_area, Location]]
 
 # --- Format Function ---
 def format_price(price):
-    if price >= 1_00_00_000:
-        return f"{price/1_00_00_000:.1f} Cr"
-    elif price >= 1_00_000:
-        return f"{price/1_00_000:.1f} Lakhs"
+    if price >= 1_00:
+        return f"{price/1_00:.1f} Cr"
     else:
-        return f"{price:,.1f}"
+        return f"{price:.1f} Lakhs"
 
 # --- Prediction Button ---
 st.markdown("---")
